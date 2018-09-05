@@ -18,16 +18,10 @@ def test_set_a_value_in_simple_yaml_file():
     """Set a value in simple yaml file."""
 
 
-@given('there is a yaml file with <content_before>')
-def input(content_before):
-    """there is a yaml file."""
-    return '\n'.join(content_before.split('\\n'))
-
-
-@when('I change the yaml file with <value>')
-@given('output')
-def output(input, value):
-    """I change the yaml file."""
+@given('I change in the yaml file with <content_before> a <value>')
+def output(content_before, value):
+    """I change in the yaml file with <content_before> a <value>."""
+    input = '\n'.join(content_before.split('\\n'))
     return yaml(input, value)
 
 
@@ -37,4 +31,4 @@ def i_should_see_the_changes_in_the_file(
     output
 ):
     """I should see the changes in the file."""
-    assert output == '\n'.join(content_after.split('\\n'))
+    assert '\n'.join(content_after.split('\\n')) == output
