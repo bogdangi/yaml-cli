@@ -75,15 +75,23 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         'path_to_file', metavar='path_to_file', type=str,
-        help='YAML path to file')
+        help='YAML path to file',
+    )
     parser.add_argument(
         '--query',
         metavar='query',
         type=str, action='append', required=True,
-        help='a query in format path=value e.g. users.0.name=Bogdan')
-    parser.add_argument('--overwrite-file', dest='overwrite_file', action='store_true', required=False)
+        help='a query in format path=value e.g. users.0.name=Bogdan',
+    )
+    parser.add_argument(
+        '--overwrite-file',
+        dest='overwrite_file',
+        action='store_true',
+        required=False,
+    )
 
     path_to_file = parser.parse_args().path_to_file
+    overwrite_file = parser.parse_args().overwrite_file
 
     with open(path_to_file, mode='r') as f:
         content = f.read()
@@ -91,5 +99,8 @@ if __name__ == "__main__":
     for query in parser.parse_args().query:
         content = yaml(content, query)
 
-    with open(path_to_file, mode='w') as f:
-        content = f.read()
+    if overwrite_file:
+        with open(path_to_file, mode='w') as f:
+            f.write(content)
+    else:
+        print(content)
