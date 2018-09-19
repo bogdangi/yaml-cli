@@ -1,0 +1,29 @@
+---
+pipeline:
+  run-tests:
+    image: python:alpine3.8
+    commands:
+      - pip install pytest-bdd==2.21.0
+      - pip install -r requirements.txt
+      - py.test tests/
+
+  build-docker-image:
+    image: plugins/docker
+    insecure: true
+    registry: registry.tola.io
+    repo: registry.tola.io/toladata/yaml-cli
+    file: Dockerfile
+    auto_tag: true
+    secrets: [DOCKER_USERNAME, DOCKER_PASSWORD]
+    when:
+      event: [tag]
+      status: [success]
+
+  notify:
+    image: plugins/slack
+    channel: drone-ci
+    username: Drone-CI
+    secrets: [SLACK_WEBHOOK]
+    when:
+      status: [failure]
+      event: [push, tag]
